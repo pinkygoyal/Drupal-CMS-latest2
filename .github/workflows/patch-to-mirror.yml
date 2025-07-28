@@ -32,7 +32,7 @@ jobs:
         env:
           MIRROR_PAT: ${{ secrets.MIRROR_PAT }}
         run: |
-          git clone https://x-access-token:${MIRROR_PAT}@github.com/target-org/target-repo.git mirror-repo
+          git clone https://x-access-token:${MIRROR_PAT}@github.com:pinkygoyal/Drupal-CMS-latest2.git mirror-repo
           cd mirror-repo
           git checkout ${{ github.event.inputs.target_branch }}
 
