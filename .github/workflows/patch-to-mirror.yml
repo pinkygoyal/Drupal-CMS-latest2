@@ -27,6 +27,11 @@ jobs:
         run: |
           mkdir patches
           git format-patch ${{ github.event.inputs.start_commit }}^..${{ github.event.inputs.end_commit }} -o patches/
+      - name: Set up Git
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+
 
       - name: Clone mirror (target) repo
         env:
