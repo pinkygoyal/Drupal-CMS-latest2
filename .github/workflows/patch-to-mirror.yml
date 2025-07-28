@@ -1,0 +1,44 @@
+name: Deploy Cherry-Pick to Mirror Repo
+on:
+  workflow_dispatch:
+    inputs:
+      start_commit:
+        description: 'Start commit SHA'
+        required: true
+      end_commit:
+        description: 'End commit SHA'
+        required: true
+      target_branch:
+        description: 'Branch to push to in mirror repo'
+        default: 'dev'
+        required: false
+
+jobs:
+  cherry-pick:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Ensure full history is available
+
+      - name: Generate patches from commit range
+        run: |
+          mkdir patches
+          git format-patch ${{ github.event.inputs.start_commit }}^..${{ github.event.inputs.end_commit }} -o patches/
+
+      - name: Clone mirror (target) repo
+        env:
+          MIRROR_PAT: ${{ secrets.MIRROR_PAT }}
+        run: |
+          git clone https://x-access-token:${MIRROR_PAT}@github.com/target-org/target-repo.git mirror-repo
+          cd mirror-repo
+          git checkout ${{ github.event.inputs.target_branch }}
+
+          # Apply patches
+          for patch in ../patches/*.patch; do
+            git am "$patch" || git am --abort
+          done
+
+          git push origin HEAD
