@@ -9,5 +9,8 @@ if ($user1 == $user2) {
   print "Both users are same";
 }
 
+print "This github code spaces is so cool, lightening fast..";
+print "I am impressed, and amazed";
+
 ?>
  
