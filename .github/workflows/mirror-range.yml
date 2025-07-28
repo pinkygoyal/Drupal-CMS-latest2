@@ -1,0 +1,30 @@
+name: Mirror Commit Range
+
+on:
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Get full history
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+
+      - name: Filter commit range
+        run: |
+          git checkout -b mirror-range
+          git cherry-pick <start_commit_sha>^..<end_commit_sha>
+
+      - name: Push to target repo
+        env:
+          TARGET_REPO: git@github.com:your-username/target-repo.git
+        run: |
+          git remote add mirror $TARGET_REPO
+          git push mirror mirror-range
