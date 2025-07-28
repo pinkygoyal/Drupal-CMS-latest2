@@ -34,7 +34,6 @@ jobs:
           MIRROR_PAT: ${{ secrets.MIRROR_PAT }}
         run: |
           git clone https://pinkygoyal:${MIRROR_PAT}@github.com/pinkygoyal/Drupal-CMS-latest2.git mirror-repo
-          git@github.com:pinkygoyal/Drupal-CMS-latest2.git
           cd mirror-repo
           git checkout ${{ github.event.inputs.target_branch }}
           
